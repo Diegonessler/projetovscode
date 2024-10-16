@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pico Neo 3 - Virtual Reality Headset</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .product-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .product-box {
+            display: inline-block;
+            width: 30%;
+            margin: 1%;
+            padding: 1%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .product-box img {
+            max-width: 100%;
+            height: auto;
+        }
+        .btn {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Experience the Future with Pico Neo 3</h1>
+        <p>The best standalone VR headset for an immersive experience.</p>
+    </header>
+
+    <?php
+    // Incluir a configuração do banco de dados
+    require '../server/config/db.php';
+
+    // Conexão com o banco de dados
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Consulta para buscar todos os produtos
+    $sql = "SELECT * FROM products";
+    $result = $conn->query($sql);
+
+    // Verificar se há produtos
+    if ($result->num_rows > 0) {
+        echo '<div class="product-container">';
+        // Listar todos os produtos
+        while ($row = $result->fetch_assoc()) {
+            $image_path = htmlspecialchars($row['image_url']);
+            echo '<div class="product-box">';
+            echo '<img src="' . $image_path . '" alt="' . htmlspecialchars($row['name']) . '" onerror="this.onerror=null; this.src=\'default.jpg\';"><br>';
+            echo '<h2>' . htmlspecialchars($row['name']) . '</h2>';
+            echo '<p>Preço: R$ ' . number_format($row['price'], 2, ',', '.') . '</p>';
+            echo '<a href="checkout.php?product_id=' . $row['id'] . '" class="btn">Comprar Agora</a>';
+            echo '</div>';
+        }
+        echo '</div>';
+    } else {
+        echo "Nenhum produto encontrado.";
+    }
+
+    // Fechar a conexão com o banco de dados
+    $conn->close();
+    ?>
+
+    <section class="features">
+        <h2>Features</h2>
+        <ul>
+            <li>Qualcomm® Snapdragon™ XR2</li>
+            <li>4K LCD Display</li>
+            <li>Comfortable Design</li>
+            <li>Wireless Freedom</li>
+        </ul>
+    </section>
+    <footer>
+        <p>&copy; 2024 Pico Neo 3. All Rights Reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
